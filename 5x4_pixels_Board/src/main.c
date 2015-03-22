@@ -37,14 +37,16 @@ void print_char(uint8_t ch)
         {
             uint8_t shift = (i==2)?4:8;       //* Get shift for byte or half byte
             for(k = 0; k<shift; k++)
-            {                                 //* Check if bit set
-                if((_chars[ch][i] >> k & 0x1))
+            {
+		char temp1 = pgm_read_byte(&(_chars[ch][i]));     //* Check if bit set
+                if((temp1 >> k & 0x1))
                 {
-                    pixel(i);    
+                    pixel(idx);    
                 }
                 idx++;                        //* Index of LED
             }
         }
+	idx = 0;
         _delay++;
     }
 }
