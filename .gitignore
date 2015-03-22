@@ -28,9 +28,12 @@
 *.x86_64
 *.hex
 
+<<<<<<< HEAD
 #Dump
 *.lss
 
+=======
+>>>>>>> 28b067ac5c4153fc104e5b0513d15a508a34aff7
 # Ignore list for Eagle, a PCB layout tool
 
 # Backup files
