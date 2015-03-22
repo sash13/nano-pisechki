@@ -74,7 +74,7 @@ int main()
         {
             for(k = 0; k<4; k++)
             {
-                idx = i*5+k;            //* Correct index
+                idx = i*4+k;            //* Correct index
                 pixel(idx); 
             }
             _delay++;
