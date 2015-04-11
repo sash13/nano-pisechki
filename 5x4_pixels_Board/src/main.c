@@ -1,8 +1,6 @@
 #include "main.h"
 
-//uint8_t i, k, _delay = 0;
-
-char i = 0, k, idx, _delay = 0;
+char i = 0, ii, k, idx, _delay = 0, say;
 
 void pixel(uint8_t ii)
 {
@@ -22,15 +20,16 @@ void pixel_test(uint8_t ii) //* Duplicate becouse gcc create strange overhead
     char temp2 = pgm_read_byte(&(led_state[ii]));
     DDRB  |= temp1;  //* Configure pins for output
     PORTB |= temp2;  //* Write pins state
-    _delay_ms(1000);
+    _delay_ms(250);
     PORTB &= ~temp2; 
     DDRB &= ~temp1; //* Configure pins for input
 }
 
 void print_char(uint8_t ch) 
 {
-    //Write test A char
     idx = 0;
+    say = ch  - 'A';
+
     while(_delay<DELAY_OBJ)
     {
         for(i = 0; i<3; i++)                  //* Index over byte
@@ -38,7 +37,7 @@ void print_char(uint8_t ch)
             uint8_t shift = (i==2)?4:8;       //* Get shift for byte or half byte
             for(k = 0; k<shift; k++)
             {
-		char temp1 = pgm_read_byte(&(_chars[ch][i]));     //* Check if bit set
+                char temp1 = pgm_read_byte(&(_chars[say][i]));     //* Check if bit set
                 if((temp1 >> k & 0x1))
                 {
                     pixel(idx);    
@@ -46,9 +45,10 @@ void print_char(uint8_t ch)
                 idx++;                        //* Index of LED
             }
         }
-	idx = 0;
+        idx = 0;
         _delay++;
     }
+    _delay =0;
 }
 
 int main()
@@ -65,7 +65,7 @@ int main()
     }
     //pixel(1);
     //* Run bits from 20 to 1
-    for( ; i>=0; i--)
+    for(i = 19 ; i>=0; i--)
     {
         pixel_test(i);
     } 
@@ -110,11 +110,9 @@ int main()
     }
     _delay = 0; 
 
-    char ii;
-    char t_mes[] = {'T', 'E', 'S', 'T'};
-    for(ii = 0; ii<4; ii++)
+    for(ii = 0; ii<MESSAGE_LEN; ++ii)
     {
-        print_char(t_mes[ii]-'A');
+        print_char(pgm_read_byte(&(message[ii])));
     }
 
   }

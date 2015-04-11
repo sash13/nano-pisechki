@@ -9,10 +9,10 @@ DUDE = avrdude
 
 # If you are not using ATtiny85 and the USBtiny programmer, 
 # update the lines below to match your configuration
-CFLAGS = -Wall -Os -mmcu=attiny13 -DF_CPU=20000000
+CFLAGS = -Wall -Os -mmcu=attiny13a -DF_CPU=9600000
 OBJFLAGS = -j .text -j .data -O ihex
 DUMPFLAGS = -h -S
-DUDEFLAGS = -p attiny13 -c usbasp -v
+DUDEFLAGS = -p attiny13a -c usbasp -v
 
 # Object files for the firmware (usbdrv/oddebug.o not strictly needed I think)
 OBJECTS = main.o

@@ -5,8 +5,14 @@
 
 #define LED_BIT  	0x1F					//* Working pins
 #define DELAY		2						//* Working pins
-#define DELAY_OBJ	1000/(20*DELAY)			//* Time to show one element  
+#define DELAY_OBJ	2000/(20*DELAY)			//* Time to show one element  
 											//* 1sec/(Number_of_elements*Delay of switch)
+#define MESSAGE_LEN 5
+
+const char message[] PROGMEM =
+{
+	'A', 'L', 'O', 'H', 'A'
+};
 
 const char led_state[] PROGMEM=		//* State of pins in led matrix when we must pull up
 {
