@@ -34,11 +34,11 @@ void print_char(uint8_t ch)
     {
         for(i = 0; i<3; i++)                  //* Index over byte
         {
+            char temp1 = pgm_read_byte(&(_chars[say][i]));     //* Load byte
             uint8_t shift = (i==2)?4:8;       //* Get shift for byte or half byte
             for(k = 0; k<shift; k++)
             {
-                char temp1 = pgm_read_byte(&(_chars[say][i]));     //* Check if bit set
-                if((temp1 >> k & 0x1))
+                if((temp1 >> k & 0x1))        //* Check if bit set
                 {
                     pixel(idx);    
                 }
@@ -76,7 +76,7 @@ int main()
         {
             for(k = 0; k<4; k++)
             {
-                idx = i*4+k;            //* Correct index
+                idx = i*4+k;                //* Correct index
                 pixel(idx); 
             }
             _delay++;
