@@ -13,6 +13,7 @@ void pixel(uint8_t ii)
     DDRB &= ~temp1; //* Configure pins for input
 }
 
+#ifdef LED_TEST
 void pixel_test(uint8_t ii) //* Duplicate becouse gcc create strange overhead 
                             //* binary when pass 2 vars to function
 {
@@ -24,7 +25,9 @@ void pixel_test(uint8_t ii) //* Duplicate becouse gcc create strange overhead
     PORTB &= ~temp2; 
     DDRB &= ~temp1; //* Configure pins for input
 }
+#endif
 
+#ifdef MESSAGE
 void print_char(uint8_t ch) 
 {
     idx = 0;
@@ -50,6 +53,7 @@ void print_char(uint8_t ch)
     }
     _delay =0;
 }
+#endif
 
 int main()
 {             
@@ -58,6 +62,7 @@ int main()
 
   while (1)
   {
+    #ifdef LED_TEST
     //* Run bits from 1 to 20
     for(i = 0; i<20; i++)
     {
@@ -69,6 +74,8 @@ int main()
     {
         pixel_test(i);
     } 
+    #endif
+    #ifdef H_LINES
     //* Horizontal lines
     for(i = 0; i<5; i++)
     {
@@ -83,7 +90,9 @@ int main()
         }
         _delay = 0;                         //* Clean counter of repeats
     }
+    #endif
     _delay = 0;
+    #ifdef V_LINES
     //* Vertical lines
     for(i = 0; i<4; i++)
     {
@@ -98,7 +107,9 @@ int main()
         }
         _delay = 0; 
     }
-
+    #endif
+    _delay = 0; 
+    #ifdef LED_ALL
     //* All pins show up!
     while(_delay<DELAY_OBJ)
     {
@@ -109,11 +120,13 @@ int main()
         _delay++;
     }
     _delay = 0; 
-
+    #endif
+    #ifdef MESSAGE
     for(ii = 0; ii<MESSAGE_LEN; ++ii)
     {
         print_char(pgm_read_byte(&(message[ii])));
     }
+    #endif
 
   }
 }

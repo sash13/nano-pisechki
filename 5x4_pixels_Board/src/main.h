@@ -3,6 +3,8 @@
 #include <util/delay.h>
 #include <stdint.h>
 
+#include "conf.h"
+
 #define LED_BIT  	0x1F					//* Working pins
 #define DELAY		2						//* Working pins
 #define DELAY_OBJ	2000/(20*DELAY)			//* Time to show one element  
@@ -30,7 +32,8 @@ const char led_mask[] PROGMEM =		//* Mask array of pins for output
 	0b10100, 0b10010,  						//* 9,  10
 };
 
-static uint8_t _chars[26][3] PROGMEM =
+#ifdef MESSAGE
+const uint8_t _chars[26][3] PROGMEM =
 {
 	{											//* A
 		0b10010110,    							//*   0 1 1 0
@@ -202,3 +205,4 @@ static uint8_t _chars[26][3] PROGMEM =
 	},
 };
 //A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z.
+#endif
