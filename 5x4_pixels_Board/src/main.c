@@ -2,13 +2,30 @@
 
 char i = 0, ii, k, idx, _delay = 0, say;
 
+void goSleep(void)
+{
+    set_sleep_mode(SLEEP_MODE_IDLE);
+    sleep_enable();
+
+    TCNT0 = 255 - 31;    //* Reset timer ((128000/8)0.002)-1 = 31
+    TCCR0B |= (1<<CS01); //* clk/8
+
+    sleep_mode();        //* go to sleep
+    //* return
+    sleep_disable();
+    power_all_enable();
+}
+
 void pixel(uint8_t ii)
 {
     char temp1 = pgm_read_byte(&(led_mask[ii/2]));
     char temp2 = pgm_read_byte(&(led_state[ii]));
     DDRB  |= temp1;  //* Configure pins for output
     PORTB |= temp2;  //* Write pins state
-    _delay_ms(DELAY);
+
+    goSleep();
+    //_delay_ms(DELAY);
+
     PORTB &= ~temp2; 
     DDRB &= ~temp1; //* Configure pins for input
 }
@@ -55,78 +72,87 @@ void print_char(uint8_t ch)
 }
 #endif
 
-int main()
-{             
+int main(void)
+{         
+    power_adc_disable();  
+    DDRB &= ~LED_BIT;                         //* Init pins for input (Z - state)
   
-  DDRB &= ~LED_BIT;                         //* Init pins for input (Z - state)
+    TCCR0A &= ~((1<<COM0A1) | (1<<COM0A0));   //* Normal timer mode
+    TIMSK0 |= (1<<TOIE0);                     //* enable overflow interrupt
 
-  while (1)
-  {
-    #ifdef LED_TEST
-    //* Run bits from 1 to 20
-    for(i = 0; i<20; i++)
+    sei();
+
+    while (1)
     {
-        pixel_test(i);
-    }
-    //pixel(1);
-    //* Run bits from 20 to 1
-    for(i = 19 ; i>=0; i--)
-    {
-        pixel_test(i);
-    } 
-    #endif
-    #ifdef H_LINES
-    //* Horizontal lines
-    for(i = 0; i<5; i++)
-    {
-        while(_delay<DELAY_OBJ)             //* Reapeat couple time for visualize multiled
+        #ifdef LED_TEST
+        //* Run bits from 1 to 20
+        for(i = 0; i<20; i++)
         {
-            for(k = 0; k<4; k++)
-            {
-                idx = i*4+k;                //* Correct index
-                pixel(idx); 
-            }
-            _delay++;
+            pixel_test(i);
         }
-        _delay = 0;                         //* Clean counter of repeats
-    }
-    #endif
-    _delay = 0;
-    #ifdef V_LINES
-    //* Vertical lines
-    for(i = 0; i<4; i++)
-    {
+        //pixel(1);
+        //* Run bits from 20 to 1
+        for(i = 19 ; i>=0; i--)
+        {
+            pixel_test(i);
+        } 
+        #endif
+        #ifdef H_LINES
+        //* Horizontal lines
+        for(i = 0; i<5; i++)
+        {
+            while(_delay<DELAY_OBJ)             //* Reapeat couple time for visualize multiled
+            {
+                for(k = 0; k<4; k++)
+                {
+                    idx = i*4+k;                //* Correct index
+                    pixel(idx); 
+                }
+                _delay++;
+            }
+            _delay = 0;                         //* Clean counter of repeats
+        }
+        #endif
+        _delay = 0;
+        #ifdef V_LINES
+        //* Vertical lines
+        for(i = 0; i<4; i++)
+        {
+            while(_delay<DELAY_OBJ)
+            {
+                for(k = 0; k<5; k++)
+                {
+                    idx = i+k*4;
+                    pixel(idx);  
+                }
+                _delay++;
+            }
+            _delay = 0; 
+        }
+        #endif
+        _delay = 0; 
+        #ifdef LED_ALL
+        //* All pins show up!
         while(_delay<DELAY_OBJ)
         {
-            for(k = 0; k<5; k++)
+            for(i = 0; i<20; i++)
             {
-                idx = i+k*4;
-                pixel(idx);  
+                pixel(i);   
             }
             _delay++;
         }
         _delay = 0; 
-    }
-    #endif
-    _delay = 0; 
-    #ifdef LED_ALL
-    //* All pins show up!
-    while(_delay<DELAY_OBJ)
-    {
-        for(i = 0; i<20; i++)
+        #endif
+        #ifdef MESSAGE
+        for(ii = 0; ii<MESSAGE_LEN; ++ii)
         {
-            pixel(i);   
+            print_char(pgm_read_byte(&(message[ii])));
         }
-        _delay++;
+        #endif
     }
-    _delay = 0; 
-    #endif
-    #ifdef MESSAGE
-    for(ii = 0; ii<MESSAGE_LEN; ++ii)
-    {
-        print_char(pgm_read_byte(&(message[ii])));
-    }
-    #endif
+}
 
-  }
+ISR(TIM0_OVF_vect)
+{
+    TCCR0B &= ~(1<<CS01); //* disable clk/8    
 }
