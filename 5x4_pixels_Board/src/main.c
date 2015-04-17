@@ -146,12 +146,18 @@ int main(void)
         #ifdef MESSAGE
         for(ii = 0; ii<MESSAGE_LEN; ++ii)
         {
-            print_char(pgm_read_byte(&(message[ii])));
+            char letter = pgm_read_byte(&(message[ii]));
+            if(letter == ' ')                               //* check if space
+            {
+                letter = 'A' + 26;                          //* correct index for synthetic space char
+            }
+            print_char(letter);
         }
         #endif
     }
 }
 
+//* interrupt when timer counter overflow
 ISR(TIM0_OVF_vect)
 {
     TCCR0B &= ~(1<<CS01); //* disable clk/8    

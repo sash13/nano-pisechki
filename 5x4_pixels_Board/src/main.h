@@ -10,7 +10,7 @@
 #include "conf.h"
 
 #define LED_BIT  	0x1F					//* Working pins
-#define DELAY		2						//* Working pins
+#define DELAY		2						//* Delay for pin change state
 #define DELAY_OBJ	2000/(20*DELAY)			//* Time to show one element  
 											//* 1sec/(Number_of_elements*Delay of switch)
 #define MESSAGE_LEN 5
@@ -37,7 +37,7 @@ const char led_mask[] PROGMEM =		//* Mask array of pins for output
 };
 
 #ifdef MESSAGE
-const uint8_t _chars[26][3] PROGMEM =
+const uint8_t _chars[27][3] PROGMEM =
 {
 	{											//* A
 		0b10010110,    							//*   0 1 1 0
@@ -205,6 +205,13 @@ const uint8_t _chars[26][3] PROGMEM =
 		0b00100100,    							//*   0 0 0 1
 		0b1111,    	   							//*   0 0 1 0
 				   								//*   0 1 0 0
+	    		   								//*   1 1 1 1
+	},
+	{											//* Space symbole
+		0b00000000,    							//*   0 0 0 0
+		0b00000000,    							//*   0 0 0 0
+		0b1111,    	   							//*   0 0 0 0
+				   								//*   0 0 0 0
 	    		   								//*   1 1 1 1
 	},
 };
