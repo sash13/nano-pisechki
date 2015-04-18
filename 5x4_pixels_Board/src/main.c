@@ -13,7 +13,6 @@ void goSleep(void)
     sleep_mode();        //* go to sleep
     //* return
     sleep_disable();
-    power_all_enable();
 }
 
 void pixel(uint8_t ii)
@@ -74,7 +73,6 @@ void print_char(uint8_t ch)
 
 int main(void)
 {         
-    power_adc_disable();  
     DDRB &= ~LED_BIT;                         //* Init pins for input (Z - state)
   
     TCCR0A &= ~((1<<COM0A1) | (1<<COM0A0));   //* Normal timer mode
